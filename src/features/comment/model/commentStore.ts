@@ -29,7 +29,7 @@ export const useCommentMutations = (postId: number) => {
     mutationFn: commentsApi.create,
     onSuccess: (newComment) => {
       queryClient.setQueriesData<{ commentsById: CommentRecord; total: number }>(
-        queryKeys.comments.byPost(postId),
+        {queryKey: queryKeys.comments.byPost(postId)},
         (prev) => {
           if (!prev)
             return {
@@ -49,7 +49,7 @@ export const useCommentMutations = (postId: number) => {
     mutationFn: commentsApi.update,
     onSuccess: (updatedComment) => {
       queryClient.setQueriesData<{ commentsById: CommentRecord; total: number }>(
-        queryKeys.comments.byPost(postId),
+        {queryKey: queryKeys.comments.byPost(postId)},
         (prev) => {
           if (!prev) return prev
           return {
@@ -65,7 +65,7 @@ export const useCommentMutations = (postId: number) => {
     mutationFn: commentsApi.delete,
     onSuccess: (commentId) => {
       queryClient.setQueriesData<{ commentsById: CommentRecord; total: number }>(
-        queryKeys.comments.byPost(postId),
+        {queryKey: queryKeys.comments.byPost(postId)},
         (prev) => {
           if (!prev) return prev
           return {
@@ -81,7 +81,7 @@ export const useCommentMutations = (postId: number) => {
     mutationFn: ({ commentId, likes }: { commentId: number; likes: number }) => commentsApi.like(commentId, likes + 1),
     onSuccess: (updatedComment) => {
       queryClient.setQueriesData<{ commentsById: CommentRecord; total: number }>(
-        queryKeys.comments.byPost(postId),
+        {queryKey: queryKeys.comments.byPost(postId)},
         (prev) => {
           if (!prev) return prev
           return {
