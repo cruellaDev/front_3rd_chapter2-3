@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterEach, afterAll, beforeEach } from "vitest"
+import { describe, it, expect, beforeAll, afterEach, afterAll } from "vitest"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { http, HttpResponse } from "msw"
@@ -8,8 +8,9 @@ import PostsManager from "../src/pages/PostsManagerPage"
 import * as React from "react"
 import "@testing-library/jest-dom"
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData"
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
 import { Provider } from "jotai"
+import { queryClient } from "../src/lib/query/queryClient"
 
 // MSW 서버 설정
 const server = setupServer(
@@ -41,20 +42,7 @@ const server = setupServer(
   }),
 )
 
-// 테스트용 QueryClient 설정
-export const testQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 0,       // 테스트에서는 항상 최신 데이터 필요
-      cacheTime: 0,       // 캐시 비활성화
-      retry: false,       // 재시도 비활성화
-      refetchOnWindowFocus: false
-    },
-  },
-})
-
 // 각 테스트 전에 캐시 초기화
-beforeEach(() => testQueryClient.clear())
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }))
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
@@ -62,7 +50,7 @@ afterAll(() => server.close())
 // 테스트에 공통으로 사용될 render 함수
 const renderPostsManager = () => {
   return render(
-    <QueryClientProvider client={testQueryClient}>
+    <QueryClientProvider client={queryClient}>
       <Provider>
         <MemoryRouter>
           <PostsManager />
