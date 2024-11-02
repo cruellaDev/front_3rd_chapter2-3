@@ -35,7 +35,7 @@ export const usePostMutations = () => {
     mutationFn: postsApi.create,
     onSuccess: (newPost: Post) => {
       // 목록 쿼리 데이터 업데이트
-      queryClient.setQueriesData<PostsResponse>(queryKeys.posts.lists(), (prev) => {
+      queryClient.setQueriesData<PostsResponse>({ queryKey: queryKeys.posts.lists() }, (prev) => {
         if (!prev) return prev
         return {
           posts: addToPosts(prev.posts, newPost),
@@ -52,7 +52,7 @@ export const usePostMutations = () => {
       queryClient.setQueryData(queryKeys.posts.detail(updatedPost.id), updatedPost)
 
       // 목록 쿼리 데이터 업데이트
-      queryClient.setQueriesData<PostsResponse>(queryKeys.posts.lists(), (prev) => {
+      queryClient.setQueriesData<PostsResponse>({ queryKey: queryKeys.posts.lists() }, (prev) => {
         if (!prev) return prev
         return {
           ...prev,
@@ -69,7 +69,7 @@ export const usePostMutations = () => {
       queryClient.removeQueries(queryKeys.posts.detail(deletedPostId))
 
       // 목록 쿼리 데이터 업데이트
-      queryClient.setQueriesData<PostsResponse>(queryKeys.posts.lists(), (prev) => {
+      queryClient.setQueriesData<PostsResponse>({ queryKey: queryKeys.posts.lists() }, (prev) => {
         if (!prev) return prev
         return {
           posts: removeFromPosts(prev.posts, deletedPostId),
