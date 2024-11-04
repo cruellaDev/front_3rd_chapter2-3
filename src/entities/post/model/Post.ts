@@ -1,3 +1,4 @@
+import { account } from "@/entities/comment/model"
 import { User } from "@/entities/user/model/User"
 
 export interface PostList {
@@ -27,8 +28,47 @@ export interface Reactions {
   dislikes: number
 }
 
+const initialPost = {
+  id: 0,
+  title: "",
+  body: "",
+  tags: [],
+  reactions: { likes: 0, dislikes: 0 },
+  views: 0,
+  userId: 0,
+}
+
 export type PostInput = Partial<Post>
 
-export const addPosts = (posts: Post[], post: Post) => [post, ...posts]
+export const addPosts = (postList: PostList | undefined, postInput: PostInput): PostList | undefined => {
+  if (!postList) return postList
+  const posts = postList.posts || []
 
-export const updatePosts = (posts: Post[], data: Post) => posts.map((post) => (post.id === data.id ? data : post))
+  const post: Post = {
+    ...initialPost,
+    ...postInput,
+    author: account,
+    id: Math.floor(Math.random() * 1000000),
+  }
+
+  return {
+    ...postList,
+    posts: [post, ...posts],
+  }
+}
+
+export const updatePosts = (postList: PostList | undefined, data: Post): PostList | undefined => {
+  if (!postList) return postList
+  return {
+    ...postList,
+    posts: postList.posts.map((post) => (post.id === data.id ? data : post)),
+  }
+}
+
+export const removePost = (postList: PostList | undefined, postId: PostId) => {
+  if (!postList) return postList
+  return {
+    ...postList,
+    posts: postList.posts.filter((post) => post.id !== postId),
+  }
+}

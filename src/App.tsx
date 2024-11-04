@@ -8,8 +8,8 @@ import PostsManagerPage from "./pages/PostsManagerPage.tsx"
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
+    <Router>
+      <QueryClientProvider client={queryClient}>
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow container mx-auto px-4 py-8">
@@ -17,9 +17,9 @@ const App = () => {
           </main>
           <Footer />
         </div>
-      </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </Router>
   )
 }
 

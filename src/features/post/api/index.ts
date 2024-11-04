@@ -1,1 +1,1 @@
-export * from "./useQueryPost"
+export * from "./useQueryPosts"

@@ -1,4 +1,4 @@
-import { Comment, CommentInput, CommentsOfPost } from "@/entities/comment/model"
+import { Comment, CommentId, CommentInput, CommentsOfPost } from "@/entities/comment/model"
 import { PostId } from "@/entities/post/model"
 import ky from "ky"
 
@@ -10,7 +10,7 @@ export async function addComment(comment: CommentInput): Promise<Comment> {
   return ky.post("/api/comments/add", { json: comment }).json()
 }
 
-export async function deleteComment(id: number): Promise<void> {
+export async function deleteComment(id: CommentId): Promise<void> {
   return ky.delete(`/api/comments/${id}`).json()
 }
 

@@ -10,7 +10,7 @@ export function PostSortBySelect() {
   }
 
   return (
-    <Select value={sortBy} onValueChange={handleSortByChange}>
+    <Select value={sortBy || "none"} onValueChange={handleSortByChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="정렬 기준" />
       </SelectTrigger>

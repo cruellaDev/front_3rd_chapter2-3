@@ -1,13 +1,12 @@
-import { addPost } from "@/entities/post/api"
-import { addPosts, PostInput } from "@/entities/post/model"
-import { usePost } from "@/features/post/model/usePost.ts"
 import { usePostDialog } from "@/features/post/model/usePostDialog.ts"
 import { Button, Input, Textarea } from "@/shared/ui"
+import { useMutationPostAdd } from "../api/useMutationPostAdd"
 import { useState } from "react"
+import { PostInput } from "@/entities/post/model"
 
 export function PostAddForm() {
-  const { setPosts } = usePost()
   const { setShowAddDialog } = usePostDialog()
+  const { mutate: mutatePostAdd } = useMutationPostAdd()
 
   const [newPost, setNewPost] = useState<PostInput>({ title: "", body: "", userId: 1 })
 
@@ -24,19 +23,8 @@ export function PostAddForm() {
   }
 
   async function handlePostAdd() {
-    try {
-      const data = await addPost(newPost)
-      const post = {
-        ...data,
-        tags: [],
-        reactions: { likes: 0, dislikes: 0 },
-      }
-
-      setPosts((posts) => addPosts(posts, post))
-      setShowAddDialog(false)
-    } catch (error) {
-      console.error("게시물 추가 오류:", error)
-    }
+    mutatePostAdd(newPost)
+    setShowAddDialog(false)
   }
 
   return (

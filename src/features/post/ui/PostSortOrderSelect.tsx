@@ -10,7 +10,7 @@ export function PostSortOrderSelect() {
   }
 
   return (
-    <Select value={sortOrder} onValueChange={handleSortOrderChange}>
+    <Select value={sortOrder || "asc"} onValueChange={handleSortOrderChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="정렬 순서" />
       </SelectTrigger>

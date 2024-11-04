@@ -1,11 +1,12 @@
-import { patchComment } from "@/entities/comment/api"
 import { useComment } from "@/features/comment/model/useComment.ts"
 import { useDialog } from "@/features/@dialog/model/useDialog.ts"
 import { Button, Textarea } from "@/shared/ui"
+import { useMutationCommentUpdate } from "../api/useMutationCommentUpdate"
 
 export function CommentEditForm() {
-  const { selectedComment, setSelectedComment, modifyComment } = useComment()
+  const { selectedComment, setSelectedComment } = useComment()
   const { setShowEditCommentDialog } = useDialog()
+  const { mutate: updateComment } = useMutationCommentUpdate()
 
   function handleBodyChange(body: string): void {
     setSelectedComment((selectedComment) => (!selectedComment ? null : { ...selectedComment, body }))
@@ -16,13 +17,8 @@ export function CommentEditForm() {
       return
     }
 
-    try {
-      const data = await patchComment(selectedComment.postId, { body: selectedComment.body })
-      modifyComment(selectedComment.postId, selectedComment.id, data)
-      setShowEditCommentDialog(false)
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error)
-    }
+    updateComment(selectedComment)
+    setShowEditCommentDialog(false)
   }
 
   return (

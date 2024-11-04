@@ -1,12 +1,12 @@
-import { putPost } from "@/entities/post/api"
 import { usePost } from "@/features/post/model/usePost.ts"
 import { Button, Input, Textarea } from "@/shared/ui"
 import { usePostDialog } from "../model/usePostDialog"
-import { updatePosts } from "@/entities/post/model"
+import { useMutationPostUpdate } from "../api/useMutationPostUpdate"
 
 export function PostEditForm() {
-  const { selectedPost, setSelectedPost, setPosts } = usePost()
+  const { selectedPost, setSelectedPost } = usePost()
   const { setShowEditDialog } = usePostDialog()
+  const { mutate: mutatePostUpdate } = useMutationPostUpdate()
 
   function handleTitleChange(title: string) {
     setSelectedPost((selectedPost) => (!selectedPost ? null : { ...selectedPost, title }))
@@ -19,13 +19,9 @@ export function PostEditForm() {
   // 게시물 업데이트
   async function handlePostUpdate() {
     if (!selectedPost) return
-    try {
-      const data = await putPost(selectedPost.id, selectedPost)
-      setPosts((posts) => updatePosts(posts, data))
-      setShowEditDialog(false)
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error)
-    }
+
+    mutatePostUpdate(selectedPost)
+    setShowEditDialog(false)
   }
 
   return (

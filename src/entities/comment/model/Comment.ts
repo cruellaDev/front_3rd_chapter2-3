@@ -1,5 +1,3 @@
-import { PostId } from "@/entities/post/model"
-
 export interface CommentUser {
   id: number
   username: string
@@ -23,46 +21,55 @@ export interface CommentsOfPost {
   limit: number
 }
 
-export type CommentList = Record<PostId, CommentsOfPost>
-
 export interface CommentInput {
   body: string
   postId: number | null
   userId: number
 }
 
-export const addCommentToPost = (comments: CommentList, postId: PostId, newComment: Comment): CommentList => ({
-  ...comments,
-  [postId]: {
-    ...comments[postId],
-    comments: [...(comments[postId]?.comments || []), newComment],
-    total: (comments[postId]?.total || 0) + 1,
-    skip: comments[postId]?.skip || 0,
-    limit: comments[postId]?.limit || 10,
-  },
-})
+export const account = {
+  id: 1,
+  username: "John",
+  fullName: "Doe",
+}
 
-export const patchCommentByPostId = (
-  comments: CommentList,
-  postId: PostId,
-  commentId: CommentId,
+export const initialCommentsOfPost: CommentsOfPost = { comments: [], total: 0, skip: 0, limit: 0 }
+
+export const addCommentsOfPost = (commentsOfPost: CommentsOfPost = initialCommentsOfPost, data: CommentInput) => {
+  return {
+    ...commentsOfPost,
+    comments: [
+      ...commentsOfPost.comments,
+      {
+        ...data,
+        id: commentsOfPost.comments.length + 1,
+        likes: 0,
+        user: {
+          id: data.userId,
+          username: account.username,
+          fullName: account.fullName,
+        },
+      },
+    ],
+  }
+}
+
+export const updateCommentOfPost = (
+  commentsOfPost: CommentsOfPost | undefined,
+  commentId: number,
   data: Partial<Comment>,
-) => ({
-  ...comments,
-  [postId]: {
-    ...comments[postId],
-    comments: comments[postId]?.comments.map((comment) =>
-      comment.id === commentId //
-        ? { ...comment, ...data }
-        : comment,
-    ),
-  },
-})
+) => {
+  if (!commentsOfPost) return commentsOfPost
+  return {
+    ...commentsOfPost,
+    comments: commentsOfPost.comments.map((c) => (c.id === commentId ? { ...c, ...data } : c)),
+  }
+}
 
-export const removeCommentByPostId = (comments: CommentList, postId: PostId, commentId: CommentId) => ({
-  ...comments,
-  [postId]: {
-    ...comments[postId],
-    comments: comments[postId]?.comments?.filter((comment) => comment.id !== commentId),
-  },
-})
+export const removeCommentOfPost = (commentsOfPost: CommentsOfPost | undefined, commentId: number) => {
+  if (!commentsOfPost) return commentsOfPost
+  return {
+    ...commentsOfPost,
+    comments: commentsOfPost.comments.filter((c) => c.id !== commentId),
+  }
+}
